@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.webkit.CookieManager;
 import android.webkit.DownloadListener;
 import android.webkit.JavascriptInterface;
 import android.webkit.JsResult;
@@ -30,13 +31,18 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 public class MainActivity extends AppCompatActivity {
 
     public WebView webView;
     public WebView childWebView = null;
 
+
+
+    public final static int SCANQR_PAGE = 49374;
     String Tag = " MainAct ";
+    private CookieManager cookieManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,122 +138,171 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
+    }
 
+    //자바스크립트 연결(Bridge)
+    private class AndroidBridge {
+        @JavascriptInterface
+        public String sendDevice() {
+            Log.e("asdd", Tag + " 547 === Javascript call sendDevice() = ");
+            return commonUtil.getDeviceUUID(mainContext);
 
+        }
 
-
-
-
-        private class AndroidBridge {
-
-            @JavascriptInterface
-            public String sendDevice() {
-                Log.e("asdd", Tag + " 547 === Javascript call sendDevice() = ");
-                return commonUtil.getDeviceUUID(mainContext);
-
-            }
-
-            @JavascriptInterface
-            public void shareFacebook(String link) {
-                Log.e("asdd", Tag + " 553 === Javascript call shareFacebook() = " + link);
+        @JavascriptInterface
+        public void shareFacebook(String link) {
+            Log.e("asdd", Tag + " 553 === Javascript call shareFacebook() = " + link);
 //			webView.loadUrl("javascript:'function명'");
 //			windows.android.shareFacebook(param);
 //			commonUtil.shareFacebook(mainContext, "?url=http://www.samsunghospital.com&title=test123");
-                commonUtil.shareFacebook(mainContext, link);
-            }
+            commonUtil.shareFacebook(mainContext, link);
+        }
 
-            @JavascriptInterface
-            public void shareTwitter(String link) {
-                Log.e("asdd", Tag + " 562 === Javascript call shareTwitter() = " + link);
+        @JavascriptInterface
+        public void shareTwitter(String link) {
+            Log.e("asdd", Tag + " 562 === Javascript call shareTwitter() = " + link);
 //			commonUtil.shareTwitter(mainContext, "?url=http://www.samsunghospital.com&title=test123");
-                commonUtil.shareTwitter(mainContext, link);
-            }
+            commonUtil.shareTwitter(mainContext, link);
+        }
 
-            @JavascriptInterface
-            public void shareKakaoTalk(String link) {
-                Log.e("asdd", Tag + " 569 === Javascript call shareKakaoTalk() = " + link);
+        @JavascriptInterface
+        public void shareKakaoTalk(String link) {
+            Log.e("asdd", Tag + " 569 === Javascript call shareKakaoTalk() = " + link);
 //			commonUtil.shareKakaoTalk(mainContext, "http://www.samsunghospital.com/m/healthInfo/content/contenView.do?CONT_SRC_ID=32614&CONT_SRC=HOMEPAGE&CONT_ID=5293&CONT_CLS_CD=001024001001");
-                commonUtil.shareKakaoTalk(mainContext, link);
-            }
+            commonUtil.shareKakaoTalk(mainContext, link);
+        }
 
-            @JavascriptInterface
-            public void goPay(String url) {
-                Log.e("asdd", Tag + " 576 === Javascript call goPay() = " + url);
-                //webView.loadUrl("https://pay.kra.co.kr:452/pg/cnspayLiteRequest.jsp?payKey=Mit19wJOZJR4A7F501pH5el8gi1OQtGT");
-                //webView.loadUrl(CommonUtil.SERVER + "app/main/index.do");
-                Message msg = handler.obtainMessage(1, url);
-                handler.sendMessage(msg);
-            }
-
-
-
-            @JavascriptInterface
-            public void externalBrowser(String[] arry) {
-                final String[] strArry = new String[10];
-                strArry[0] = arry[0];
-
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Message msg = Message.obtain();
-                        msg.what = 3;
-                        msg.obj = strArry;
-                        handler.sendMessage(msg);
-                    }
-                });
-            }
-
-            //QR Scan javascript call
-            @JavascriptInterface
-            public void goScanQR() {
-                Log.e("asdd", Tag + " 534 === Javascript call goScanQR()");
-                new IntentIntegrator(MainActivity.this).initiateScan();
-            }
-
-            //setSharedPreferencesString(데이터 저장)
-            @JavascriptInterface
-            public void setSharedPreferencesString(final String key, final String value) {
-                Log.e("asdd", Tag + " 535 === Javascript call setSharedPreferencesString(key, value)");
-
-                pref = getSharedPreferences(sharedName, MODE_PRIVATE);
-                SharedPreferences.Editor editor = pref.edit();
-                editor.putString(key, value);
-                editor.commit();
-            }
-
-            //getSharedPreferencesString(데이터 불러오기)
-            @JavascriptInterface
-            public String getSharedPreferencesString(final String key) {
-                Log.e("asdd", Tag + " 535 === Javascript call getSharedPreferencesString(key)");
-                pref = getSharedPreferences(sharedName, MODE_PRIVATE);
-                String result = pref.getString(key,"");
-                return result;
-            }
-
-            //clearSharedPreferencesData(데이터 삭제)
-            @JavascriptInterface
-            public void clearSharedPreferencesData() {
-                Log.e("asdd", Tag + " 535 === Javascript call clearSharedPreferencesData()");
-                pref = getSharedPreferences(sharedName, MODE_PRIVATE);
-                SharedPreferences.Editor editor = pref.edit();
-                editor.clear();
-                editor.commit();
-            }
-
-            //테스트
-            @JavascriptInterface
-            public void SessionTest() {
-                Log.e("asdd", Tag + " 535 === Javascript call clearSharedPreferencesData()");
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        webView.loadUrl("javascript:'scriptTest()'");
-                    }
-                });
-            }
+        @JavascriptInterface
+        public void goPay(String url) {
+            Log.e("asdd", Tag + " 576 === Javascript call goPay() = " + url);
+            //webView.loadUrl("https://pay.kra.co.kr:452/pg/cnspayLiteRequest.jsp?payKey=Mit19wJOZJR4A7F501pH5el8gi1OQtGT");
+            //webView.loadUrl(CommonUtil.SERVER + "app/main/index.do");
+            Message msg = handler.obtainMessage(1, url);
+            handler.sendMessage(msg);
         }
 
 
 
+        @JavascriptInterface
+        public void externalBrowser(String[] arry) {
+            final String[] strArry = new String[10];
+            strArry[0] = arry[0];
+
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Message msg = Message.obtain();
+                    msg.what = 3;
+                    msg.obj = strArry;
+                    handler.sendMessage(msg);
+                }
+            });
+        }
+
+        //QR Scan javascript call
+        @JavascriptInterface
+        public void goScanQR() {
+            Log.e("asdd", Tag + " 534 === Javascript call goScanQR()");
+            new IntentIntegrator(MainActivity.this).initiateScan();
+        }
+
+        //setSharedPreferencesString(데이터 저장)
+        @JavascriptInterface
+        public void setSharedPreferencesString(final String key, final String value) {
+            Log.e("asdd", Tag + " 535 === Javascript call setSharedPreferencesString(key, value)");
+
+            pref = getSharedPreferences(sharedName, MODE_PRIVATE);
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putString(key, value);
+            editor.commit();
+        }
+
+        //getSharedPreferencesString(데이터 불러오기)
+        @JavascriptInterface
+        public String getSharedPreferencesString(final String key) {
+            Log.e("asdd", Tag + " 535 === Javascript call getSharedPreferencesString(key)");
+            pref = getSharedPreferences(sharedName, MODE_PRIVATE);
+            String result = pref.getString(key,"");
+            return result;
+        }
+
+        //clearSharedPreferencesData(데이터 삭제)
+        @JavascriptInterface
+        public void clearSharedPreferencesData() {
+            Log.e("asdd", Tag + " 535 === Javascript call clearSharedPreferencesData()");
+            pref = getSharedPreferences(sharedName, MODE_PRIVATE);
+            SharedPreferences.Editor editor = pref.edit();
+            editor.clear();
+            editor.commit();
+        }
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        Log.e("asdd", Tag + " 876 === onPause()");
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.e("asdd", Tag + " 1124 === onDestroy()");
+        super.onDestroy();
+        try {
+            cookieManager.removeSessionCookie();
+        } catch (NullPointerException e) {
+            Log.e("asdd", this.getClass() + " 1571 === NullPointerException occured ");
+        } catch (Exception e) {
+            Log.e("asdd", this.getClass() + " 1573 === Exception occured ");
+        }
+
+        webView.clearCache(true);
+        webView.clearHistory();
+        webView.clearFormData();
+        webView.removeAllViews();
+        webView.clearSslPreferences();
+        webView.destroy();
+
+        System.exit(0);
+        //android.os.Process.killProcess(Process.myPid());
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.e("asdd", Tag + " 1036 === onActivityResult() requestCode = " + requestCode);
+        Log.e("asdd", Tag + " 1037 === onActivityResult() resultCode = " + resultCode);
+
+
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case SCANQR_PAGE:
+                    IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+                    if(result != null) {
+                        if(result.getContents() == null) {
+                            Toast.makeText(this, "스캔인식을 실패하였습니다. 다시 시도 해주세요.", Toast.LENGTH_LONG).show();
+
+                        } else {
+                            webView.loadUrl("javascript:SuccessScanQR('"+result.getContents()+"')");
+                            //Toast.makeText(this, result.getContents(), Toast.LENGTH_LONG).show();
+                            //Toast.makeText(this, "스캔이 완료 되었습니다.", Toast.LENGTH_LONG).show();
+
+                        }
+                    } else {
+                        super.onActivityResult(requestCode, resultCode, data);
+                    }
+                    break;
+
+
+                default:
+                    break;
+            }
+        } else if (resultCode == RESULT_CANCELED) {
+
+        }
     }
 }
