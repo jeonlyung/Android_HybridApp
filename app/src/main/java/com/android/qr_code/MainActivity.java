@@ -140,6 +140,40 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+    Handler handler = new Handler(){
+        public void handleMessage(Message msg) {
+            Log.e("asdd", Tag + " 531 === handleMessage() = " + msg.what);
+            switch (msg.what) {
+                case 1:
+                    Log.e("asdd", Tag + " 534 === handleMessage() 1 = " + msg.obj.toString());
+                    webView.loadUrl(msg.obj.toString());
+                    break;
+
+                case 2:
+                    Log.e("asdd", Tag + " 537 === handleMessage() 2 = " + msg.obj.toString());
+                    webView.loadUrl(msg.obj.toString());
+                    break;
+
+                case 3:
+                    Log.e("asdd", Tag + " 538 === handleMessage() 3 = " + msg.obj.toString());
+                    externalBrowser((String[])msg.obj);
+                    break;
+
+                default:
+                    break;
+            }
+        };
+    };
+
+    private void externalBrowser(final String[] params) {
+        String openUrl = params[0];
+        if(!"".equals(openUrl)) {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(openUrl));
+            startActivity(intent);
+        }
+    }
+
     //자바스크립트 연결(Bridge)
     private class AndroidBridge {
         @JavascriptInterface
@@ -280,6 +314,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
+                //QR Scanner 인식
                 case SCANQR_PAGE:
                     IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
                     if(result != null) {
