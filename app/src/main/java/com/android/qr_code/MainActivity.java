@@ -29,6 +29,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+
 public class MainActivity extends AppCompatActivity {
 
     public WebView webView;
@@ -132,38 +134,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        Handler handler = new Handler(){
-            public void handleMessage(Message msg) {
-                Log.e("asdd", Tag + " 531 === handleMessage() = " + msg.what);
-                switch (msg.what) {
-                    case 1:
-                        Log.e("asdd", Tag + " 534 === handleMessage() 1 = " + msg.obj.toString());
-                        webView.loadUrl(msg.obj.toString());
-                        break;
 
-                    case 2:
-                        Log.e("asdd", Tag + " 537 === handleMessage() 2 = " + msg.obj.toString());
-                        webView.loadUrl(msg.obj.toString());
-                        break;
 
-                    case 3:
-                        Log.e("asdd", Tag + " 538 === handleMessage() 3 = " + msg.obj.toString());
-                        externalBrowser((String[])msg.obj);
-                        break;
 
-                    default:
-                        break;
-                }
-            };
-        };
-
-        private void externalBrowser(final String[] params) {
-            String openUrl = params[0];
-            if(!"".equals(openUrl)) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(openUrl));
-                startActivity(intent);
-            }
-        }
 
         private class AndroidBridge {
 
@@ -181,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
 //			windows.android.shareFacebook(param);
 //			commonUtil.shareFacebook(mainContext, "?url=http://www.samsunghospital.com&title=test123");
                 commonUtil.shareFacebook(mainContext, link);
-            };
+            }
 
             @JavascriptInterface
             public void shareTwitter(String link) {
@@ -229,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
             public void goScanQR() {
                 Log.e("asdd", Tag + " 534 === Javascript call goScanQR()");
                 new IntentIntegrator(MainActivity.this).initiateScan();
-            };
+            }
 
             //setSharedPreferencesString(데이터 저장)
             @JavascriptInterface
@@ -240,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = pref.edit();
                 editor.putString(key, value);
                 editor.commit();
-            };
+            }
 
             //getSharedPreferencesString(데이터 불러오기)
             @JavascriptInterface
@@ -249,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
                 pref = getSharedPreferences(sharedName, MODE_PRIVATE);
                 String result = pref.getString(key,"");
                 return result;
-            };
+            }
 
             //clearSharedPreferencesData(데이터 삭제)
             @JavascriptInterface
@@ -259,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = pref.edit();
                 editor.clear();
                 editor.commit();
-            };
+            }
 
             //테스트
             @JavascriptInterface
@@ -271,8 +244,7 @@ public class MainActivity extends AppCompatActivity {
                         webView.loadUrl("javascript:'scriptTest()'");
                     }
                 });
-            };
-
+            }
         }
 
 
