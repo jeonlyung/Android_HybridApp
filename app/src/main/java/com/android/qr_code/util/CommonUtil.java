@@ -1,31 +1,19 @@
 package com.android.qr_code.util;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
-import android.content.res.Resources.NotFoundException;
-import android.graphics.Bitmap;
-import android.graphics.Typeface;
-import android.location.LocationManager;
 import android.net.Uri;
-import android.os.Build;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
 import android.provider.Settings.Secure;
-import android.renderscript.Allocation;
-import android.renderscript.Element;
-import android.renderscript.RenderScript;
-import android.renderscript.ScriptIntrinsicBlur;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.util.TypedValue;
@@ -45,20 +33,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLEncoder;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -301,28 +282,7 @@ public class CommonUtil {
 		context.startActivity(intent);
 	}
 
-	// 화면 캡쳐블러처리
-	@SuppressLint("NewApi")
-	public static Bitmap screenblur(Activity av2, View view, float radius) throws Exception {
-		if (view == null)
-			view = av2.getWindow().getDecorView();
-		view.setDrawingCacheEnabled(true);
-		Bitmap screenshot = view.getDrawingCache();
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-			RenderScript rs = RenderScript.create(av2);
-
-			final Allocation input = Allocation.createFromBitmap(rs, screenshot);
-			final Allocation output = Allocation.createTyped(rs, input.getType());
-			final ScriptIntrinsicBlur script = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
-			script.setRadius(radius);
-			script.setInput(input);
-			script.forEach(output);
-			output.copyTo(screenshot);
-		}
-
-		return screenshot;
-	}
 
 	// top activity 이름 가져오기
 	public static String getTopActivityStackName(Context context) {

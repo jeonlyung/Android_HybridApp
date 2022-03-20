@@ -1,5 +1,6 @@
 package com.android.qr_code;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.content.Context;
@@ -12,9 +13,6 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -35,7 +33,7 @@ import com.android.qr_code.util.CommonUtil;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     public WebView webView;
     public WebView childWebView = null;
@@ -58,6 +56,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mainContext = this;
+
+        cookieManager = CookieManager.getInstance();
+        cookieManager.setAcceptCookie(true);
+        cookieManager.acceptCookie();
+
         //웹뷰 셋팅
         webInit();
 
@@ -70,10 +74,17 @@ public class MainActivity extends AppCompatActivity {
             webView.setWebContentsDebuggingEnabled(true);
         }
 
+        webView = findViewById(R.id.webview);
+
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
         webView.getSettings().setDomStorageEnabled(true);
-        webView.getSettings().setSupportMultipleWindows(true);
+        webView.getSettings().setAllowContentAccess(true);
+        webView.getSettings().setAllowFileAccess(true);
+        webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        webView.getSettings().setLoadWithOverviewMode(true);
+        webView.getSettings().setUseWideViewPort(true);
+        webView.getSettings().setSupportZoom(true);
 
         //userAgent set
         String userAgent = webView.getSettings().getUserAgentString();
