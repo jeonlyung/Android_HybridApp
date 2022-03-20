@@ -2,6 +2,7 @@ package com.android.qr_code;
 
 import android.app.AlertDialog;
 import android.app.DownloadManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -30,6 +31,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.android.qr_code.util.CommonUtil;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -37,12 +39,19 @@ public class MainActivity extends AppCompatActivity {
 
     public WebView webView;
     public WebView childWebView = null;
+    public CommonUtil commonUtil;
 
-
-
+    public String baseUrl = "";
     public final static int SCANQR_PAGE = 49374;
     String Tag = " MainAct ";
-    private CookieManager cookieManager;
+
+    public CookieManager cookieManager;
+    public Context mainContext;
+
+    private SharedPreferences pref;
+    //SharedPreferences 구분
+    private final String sharedName = "userInfo";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         webView.clearFormData();
         webView.clearCache(true);
 
-        webView.setWebViewClient(new WebViewClientClass());
+        //webView.setWebViewClient(new WebViewClientClass());
         webView.addJavascriptInterface(new AndroidBridge(), "android");
 
         webView.setWebChromeClient(new WebChromeClient() {
@@ -138,6 +147,9 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
+
+        baseUrl = "https://www.naver.com";
+        webView.loadUrl(baseUrl);
     }
 
 
@@ -176,6 +188,7 @@ public class MainActivity extends AppCompatActivity {
 
     //자바스크립트 연결(Bridge)
     private class AndroidBridge {
+
         @JavascriptInterface
         public String sendDevice() {
             Log.e("asdd", Tag + " 547 === Javascript call sendDevice() = ");
@@ -197,13 +210,6 @@ public class MainActivity extends AppCompatActivity {
             Log.e("asdd", Tag + " 562 === Javascript call shareTwitter() = " + link);
 //			commonUtil.shareTwitter(mainContext, "?url=http://www.samsunghospital.com&title=test123");
             commonUtil.shareTwitter(mainContext, link);
-        }
-
-        @JavascriptInterface
-        public void shareKakaoTalk(String link) {
-            Log.e("asdd", Tag + " 569 === Javascript call shareKakaoTalk() = " + link);
-//			commonUtil.shareKakaoTalk(mainContext, "http://www.samsunghospital.com/m/healthInfo/content/contenView.do?CONT_SRC_ID=32614&CONT_SRC=HOMEPAGE&CONT_ID=5293&CONT_CLS_CD=001024001001");
-            commonUtil.shareKakaoTalk(mainContext, link);
         }
 
         @JavascriptInterface
