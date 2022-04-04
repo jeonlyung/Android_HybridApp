@@ -57,6 +57,7 @@ public class MainActivity extends Activity {
         cookieManager.setAcceptCookie(true);
         cookieManager.acceptCookie();
 
+        //커밋 테스트
         //웹뷰 셋팅
         webInit();
 
