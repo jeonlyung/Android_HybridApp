@@ -24,15 +24,12 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.android.qr_code.util.CommonUtil;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
+
 
 public class MainActivity extends Activity {
 
     public WebView webView;
     public WebView childWebView = null;
-    public CommonUtil commonUtil;
 
     public String baseUrl = "";
     public final static int SCANQR_PAGE = 49374;
@@ -57,13 +54,11 @@ public class MainActivity extends Activity {
         cookieManager.setAcceptCookie(true);
         cookieManager.acceptCookie();
 
-        //커밋 테스트
-        //웹뷰 셋팅
         webInit();
 
     }
 
-
+    //웹뷰 셋팅
     public void webInit(){
         //원격디버깅 테스트용 :
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -91,7 +86,8 @@ public class MainActivity extends Activity {
         webView.clearFormData();
         webView.clearCache(true);
 
-        //webView.setWebViewClient(new WebViewClientClass());
+
+        //javascript Bridge 연결
         webView.addJavascriptInterface(new AndroidBridge(), "android");
 
         webView.setWebChromeClient(new WebChromeClient() {
@@ -160,90 +156,14 @@ public class MainActivity extends Activity {
     }
 
 
-    Handler handler = new Handler(){
-        public void handleMessage(Message msg) {
-            Log.e("asdd", Tag + " 531 === handleMessage() = " + msg.what);
-            switch (msg.what) {
-                case 1:
-                    Log.e("asdd", Tag + " 534 === handleMessage() 1 = " + msg.obj.toString());
-                    webView.loadUrl(msg.obj.toString());
-                    break;
-
-                case 2:
-                    Log.e("asdd", Tag + " 537 === handleMessage() 2 = " + msg.obj.toString());
-                    webView.loadUrl(msg.obj.toString());
-                    break;
-
-                case 3:
-                    Log.e("asdd", Tag + " 538 === handleMessage() 3 = " + msg.obj.toString());
-                    externalBrowser((String[])msg.obj);
-                    break;
-
-                default:
-                    break;
-            }
-        };
-    };
-
-    private void externalBrowser(final String[] params) {
-        String openUrl = params[0];
-        if(!"".equals(openUrl)) {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(openUrl));
-            startActivity(intent);
-        }
-    }
-
     //자바스크립트 연결(Bridge)
     private class AndroidBridge {
-
-        @JavascriptInterface
-        public String sendDevice() {
-            Log.e("asdd", Tag + " 547 === Javascript call sendDevice() = ");
-            return commonUtil.getDeviceUUID(mainContext);
-
-        }
-
-        @JavascriptInterface
-        public void shareFacebook(String link) {
-            Log.e("asdd", Tag + " 553 === Javascript call shareFacebook() = " + link);
-//			webView.loadUrl("javascript:'function명'");
-//			windows.android.shareFacebook(param);
-//			commonUtil.shareFacebook(mainContext, "?url=http://www.samsunghospital.com&title=test123");
-            commonUtil.shareFacebook(mainContext, link);
-        }
-
-        @JavascriptInterface
-        public void shareTwitter(String link) {
-            Log.e("asdd", Tag + " 562 === Javascript call shareTwitter() = " + link);
-//			commonUtil.shareTwitter(mainContext, "?url=http://www.samsunghospital.com&title=test123");
-            commonUtil.shareTwitter(mainContext, link);
-        }
-
-        @JavascriptInterface
-        public void goPay(String url) {
-            Log.e("asdd", Tag + " 576 === Javascript call goPay() = " + url);
-            //webView.loadUrl("https://pay.kra.co.kr:452/pg/cnspayLiteRequest.jsp?payKey=Mit19wJOZJR4A7F501pH5el8gi1OQtGT");
-            //webView.loadUrl(CommonUtil.SERVER + "app/main/index.do");
-            Message msg = handler.obtainMessage(1, url);
-            handler.sendMessage(msg);
-        }
-
-
 
         @JavascriptInterface
         public void externalBrowser(String[] arry) {
             final String[] strArry = new String[10];
             strArry[0] = arry[0];
 
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    Message msg = Message.obtain();
-                    msg.what = 3;
-                    msg.obj = strArry;
-                    handler.sendMessage(msg);
-                }
-            });
         }
 
         //QR Scan javascript call
