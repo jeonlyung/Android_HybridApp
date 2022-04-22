@@ -25,6 +25,8 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 public class MainActivity extends Activity {
 
@@ -42,6 +44,8 @@ public class MainActivity extends Activity {
     //SharedPreferences 구분
     private final String sharedName = "userInfo";
 
+    //로컬페이지 셋팅
+    private final Boolean localPage = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +90,7 @@ public class MainActivity extends Activity {
         webView.clearFormData();
         webView.clearCache(true);
 
-
+        //webView.setWebViewClient(new WebViewClientClass());
         //javascript Bridge 연결
         webView.addJavascriptInterface(new AndroidBridge(), "android");
 
@@ -151,9 +155,15 @@ public class MainActivity extends Activity {
 
         });
 
-        baseUrl = "https://www.naver.com";
+        if(localPage){
+            baseUrl = "file:///android_asset/www/test.html";
+        }else{
+            baseUrl = "https://www.naver.com";
+        }
         webView.loadUrl(baseUrl);
     }
+
+
 
 
     //자바스크립트 연결(Bridge)
