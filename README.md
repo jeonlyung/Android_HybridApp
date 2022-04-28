@@ -17,6 +17,6 @@ QR Code Scanner기능을 사용가능한 Android 앱
   - Android Studio
 
 
-3. 저작권, 라이선스 정보
-4. 외부 리소스 정보
+3. 외부 리소스 정보
+  - zxing 라이브러리 사용
 
