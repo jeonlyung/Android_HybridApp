@@ -18,5 +18,5 @@ QR Code Scanner기능을 사용가능한 Android 앱
 
 
 3. 외부 리소스 정보
-  - zxing 라이브러리 사용
+  - zxing-android-embedded library : 3.6.0
 
