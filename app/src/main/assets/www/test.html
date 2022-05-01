@@ -6,78 +6,64 @@
 <meta http-equiv="Content-Script-Type" content="text/javascript">
 <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'">
 <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1" />
-<title>한국마사회 샘플 테스트 앱</title>
-    <script type="text/javascript" charset="utf-8" src="./test.js"></script>
+<title>HSJ 하이브리드 앱 테스트</title>
 
+<script type="text/javascript" charset="utf-8" src="./test.js"></script>
 
 <script type="text/javascript" charset="utf-8">
-
-
-    	function init(){
-    		console.log("init !!!");
-        }
-
-
-
-        function externalBrowser(){
-        	console.log("externalBrowser called");
-//        	var url={"url": "http://10.10.39.179:11001/apAdmin/postTest.jsp"};
-        	var url={"url": "http://m.kra.co.kr/med"};
-
-        	var args={"text":"2"};
-//        	MOBPToastPlugin.show(successCallback, failCallback, args);
-        	MOBPToastPlugin.show(successCallback, failCallback, url,  args);
-        }
-
-
-        function exteranlBrower() {
-        	var url={"url": "http://m.kra.co.kr/med"};
-        	ExternalBrowser.view(successCallback, failCallback, url);
-        }
-
-        function newHorse() {
-        	var args = {"pkgID":"kr.co.kra.rhap"};
-        	PackageManagerPlugin.checkInstall(successConf, errorConf, args);
-        }
-
-	</script>
-
+    function init(){
+        console.log("init !!!");
+    }
+</script>
 
 </head>
 
 <body onload="init()" background="">
-
 	<div id="_index" data-role="page">
 		<div data-role="header" data-theme="a">
 			<h1>한국마사회 샘플 테스트 앱</h1>
 		</div>
 
 		<div data-role="content">
-			<br />
-			<form action="sqlite/index.html" method="post"> 
-				<button class="btn">SQLITE 테스트</button>
-			</form>
 			<br/>
-			<button class="btn" onclick="ScanQR()">ScanQR</button>
+			<br/>
+			<button class="btn" onclick="ScanQR()">ScanQR 테스트</button>
             <br/>
 			<br/>
-            <input type="text" id="idVal" placeholder="아이디">
-            <input type="text" id="pwVal" placeholder="비밀번호">
-            <button class="btn" onclick="setStringVal()">로그인</button>
+            <table border="solid 1px;">
+                <tr>
+                    <td>아이디</td>
+                    <td><input type="text" id="idVal" placeholder="아이디"></td>
+                </tr>
+                <tr>
+                    <td>비밀번호</td>
+                    <td><input type="text" id="pwVal" placeholder="비밀번호"></td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" style="font-size:3px;" id="idSaveCk"   >아이디 저장</td>
+                    <td><input type="checkbox" style="font-size:3px;" id="loginSaveCk">자동 로그인</td>
+                </tr>
+                <tr>
+                    <td><button class="btn" onclick="setStringVal()">로그인</button></td>
+                </tr>
+            </table>
             <br/>
             <br/>
-            <input type="checkbox" id="idSaveCk">아이디 저장
-            <br/>
-            <br/>
-            <input type="checkbox" id="loginSaveCk">자동 로그인
 
-            <br/>
-            <br/>
             <button class="btn" onclick="getStringVal()">데이터 불러오기</button>
             <br/>
             <br/>
             <button class="btn" onclick="cleartData()">데이터 삭제</button>
             <br/>
+            <br/>
+            <br/>
+            <table style="" border="solid 1px;">
+                <tr>
+                    <td>파일첨부 테스트</td>
+                    <td><input type="file" value=""></td>
+                </tr>
+            </table>
+<!--            <input type="file" value="파일첨부 테스트">-->
             <br/>
 
 

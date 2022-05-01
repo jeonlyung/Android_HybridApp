@@ -27,18 +27,6 @@ function screenShot() {
   }
 }
 
-function snsShareSelected(selected) {
-  // android
-  if (navigator.userAgent.toLowerCase().indexOf('android') > 0) {
-    window.callbackHandler.snsShareSelected(selected);
-  }
-
-  // iOS
-  if (navigator.userAgent.toLowerCase().indexOf('ios') > 0) {
-    window.webkit.messageHandlers.callbackHandler.postMessage({'snsShareSelected':selected});
-  }
-}
-
 //ScanQR 호출 함수
 function ScanQR() {
   //호스피아 앱에서 접속했는지 구분할 수 있는 값 : HORSEPIA_aOS
