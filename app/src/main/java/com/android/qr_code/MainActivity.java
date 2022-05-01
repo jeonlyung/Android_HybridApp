@@ -34,7 +34,12 @@ public class MainActivity extends Activity {
     public WebView childWebView = null;
 
     public String baseUrl = "";
+
+    //Activity Result Value
     public final static int SCANQR_PAGE = 49374;
+    public final static int FILE_CHOOSE_PAGE = 111;
+
+
     String Tag = " MainAct ";
 
     public CookieManager cookieManager;
@@ -44,7 +49,7 @@ public class MainActivity extends Activity {
     //SharedPreferences 구분
     private final String sharedName = "userInfo";
 
-    //로컬페이지 셋팅
+    //로컬페이지 구분
     private final Boolean localPage = true;
 
     @Override
@@ -168,14 +173,6 @@ public class MainActivity extends Activity {
 
     //자바스크립트 연결(Bridge)
     private class AndroidBridge {
-
-        @JavascriptInterface
-        public void externalBrowser(String[] arry) {
-            final String[] strArry = new String[10];
-            strArry[0] = arry[0];
-
-        }
-
         //QR Scan javascript call
         @JavascriptInterface
         public void goScanQR() {
@@ -275,9 +272,14 @@ public class MainActivity extends Activity {
                     }
                     break;
 
+                case FILE_CHOOSE_PAGE:
+
+                    break;
 
                 default:
                     break;
+
+
             }
         } else if (resultCode == RESULT_CANCELED) {
 
