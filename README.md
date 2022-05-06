@@ -1,4 +1,4 @@
-# android 하이브리드 앱
+# android Hybrid app(안드로이드 하이브리드 앱)
 
 JavaScript를 이용하여 웹 페이지로 구현되어 있는 하이브리드 앱 기반 
 
