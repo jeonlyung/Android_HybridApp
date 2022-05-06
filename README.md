@@ -20,6 +20,10 @@ JavaScript를 이용하여 웹 페이지로 구현되어 있는 하이브리드 
     - Android Studio
 
 
-3. 외부 리소스 정보
-  - zxing-android-embedded library : 3.6.0
-
+3. 핵심 라이브러리
+   - zxing-android-embedded library : 3.6.0 (QR SCanner)
+   
+4. 저작권, 라이선스 정보
+    - inflearn 스프링 부트와 JPA활용1 - 웹 어플리케이션 개발 참조
+   
+5. 외부 라이브러리 정보
