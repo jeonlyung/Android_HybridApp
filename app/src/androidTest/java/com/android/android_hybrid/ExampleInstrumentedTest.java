@@ -23,7 +23,7 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.android.qr_code", appContext.getPackageName());
+        assertEquals("com.android.android_hybrid", appContext.getPackageName());
     }
      */
 }
