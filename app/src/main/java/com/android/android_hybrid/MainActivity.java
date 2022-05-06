@@ -1,4 +1,4 @@
-package com.android.qr_code;
+package com.android.android_hybrid;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Handler;
 import android.os.Message;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,9 +28,6 @@ import android.widget.Toast;
 //QR SCanner
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-
-import android.Manifest;
-import android.content.pm.PackageManager;
 
 
 public class MainActivity extends Activity {

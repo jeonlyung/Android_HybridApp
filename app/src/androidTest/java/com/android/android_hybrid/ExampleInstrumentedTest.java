@@ -1,4 +1,4 @@
-package com.android.qr_code;
+package com.android.android_hybrid;
 
 /*import android.content.Context;
 import android.support.test.InstrumentationRegistry;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.android.qr_code">
+    package="com.android.android_hybrid">
 
     <uses-permission android:name="android.permission.CAMERA" />                       <!-- 카메라 권한     -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />        <!-- 파일 업로드 권한 -->
@@ -14,7 +14,7 @@
         android:theme="@style/AppTheme"
         android:exported="true">
 
-        <activity android:name=".MainActivity">
+        <activity android:name="com.android.android_hybrid.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

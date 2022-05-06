@@ -1,4 +1,4 @@
-package com.android.qr_code;
+package com.android.android_hybrid;
 
 import org.junit.Test;
 
