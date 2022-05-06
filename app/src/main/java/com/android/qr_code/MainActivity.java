@@ -163,17 +163,17 @@ public class MainActivity extends Activity {
                 return true;
             }
 
-            //웹페이지에서 input(type="file") 클릭시 이벤트 발생
+            //웹페이지에서 input(type="file") 클릭시 이벤트 발생(2022-05-06)
             @Override
             public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
-                Log.d("asdd", "***** onShowFileChooser()");
+                Log.d("FileChooser : ", "***** onShowFileChooser()");
                 //Callback 초기화
                 //return super.onShowFileChooser(webView, filePathCallback, fileChooserParams);
 
                 /* 파일 업로드 */
                 if (mFilePathCallback != null) {
                     //파일을 한번 오픈했으면 mFilePathCallback 를 초기화를 해줘야함
-                    // -- 그렇지 않으면 다시 파일 오픈 시 열리지 않는 경우 발생
+                    //그렇지 않으면 다시 파일 오픈 시 열리지 않는 경우 발생
                     mFilePathCallback.onReceiveValue(null);
                     mFilePathCallback = null;
                 }
@@ -186,7 +186,7 @@ public class MainActivity extends Activity {
                     Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                     intent.addCategory(Intent.CATEGORY_OPENABLE);
                     intent.setType("*/*");  //모든 contentType 파일 표시
-    //            intent.setType("image/*");  //contentType 이 image 인 파일만 표시
+    //              intent.setType("image/*");  //contentType 이 image 인 파일만 표시
                     startActivityForResult(intent, FILE_CHOOSE_PAGE);
                     return true;
                 } else {
@@ -341,31 +341,35 @@ public class MainActivity extends Activity {
 
                 case FILE_CHOOSE_PAGE:
                     //fileChooser 로 파일 선택 후 onActivityResult 에서 결과를 받아 처리함
-                    if(requestCode == FILE_CHOOSE_PAGE) {
-                        //파일 선택 완료 했을 경우
-                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {// LOLLIPOP : 21(안드로이드 5)
-                            mFilePathCallback.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, data));
-                        }else{
-                            mFilePathCallback.onReceiveValue(new Uri[]{data.getData()});
-                        }
-                        mFilePathCallback = null;
-                    } else {
-                        //cancel 했을 경우
-                        if(mFilePathCallback != null) {
-                            mFilePathCallback.onReceiveValue(null);
-                            mFilePathCallback = null;
-                        }
+
+                    //파일 선택 완료 했을 경우
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {// LOLLIPOP : 21(안드로이드5 이상)
+                        mFilePathCallback.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, data));
+                    }else{//안드로이드5 이하
+                        mFilePathCallback.onReceiveValue(new Uri[]{data.getData()});
                     }
+                    //mFilePathCallback 초기화 안해주면 버튼 클릭시 다시 안열림
+                    mFilePathCallback = null;
+
                     break;
 
 
                 default:
                     break;
+            }
+        } else if (resultCode == RESULT_CANCELED) {//취소
+            switch (requestCode) {
+                case FILE_CHOOSE_PAGE:
+                    //cancel 했을 경우 초기화 안해주면 안열린다.
+                    mFilePathCallback.onReceiveValue(null);
+                    mFilePathCallback = null;
 
+                    break;
+
+                default:
+                    break;
 
             }
-        } else if (resultCode == RESULT_CANCELED) {
-
         }
     }
 }
