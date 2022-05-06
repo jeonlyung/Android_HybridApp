@@ -16,6 +16,7 @@ import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.JsResult;
+import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -25,8 +26,13 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 
+//QR SCanner
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+
+import android.Manifest;
+import android.content.pm.PackageManager;
+
 
 public class MainActivity extends Activity {
 
@@ -37,7 +43,7 @@ public class MainActivity extends Activity {
 
     //Activity Result Value
     public final static int SCANQR_PAGE = 49374;
-    public final static int FILE_CHOOSE_PAGE = 111;
+    public final static int FILE_CHOOSE_PAGE = 1234;
 
 
     String Tag = " MainAct ";
@@ -51,6 +57,9 @@ public class MainActivity extends Activity {
 
     //로컬페이지 구분
     private final Boolean localPage = true;
+
+    //파일 업로드 관련
+    private ValueCallback mFilePathCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +75,32 @@ public class MainActivity extends Activity {
         webInit();
 
     }
+
+    // 앱 권한 체크 메소드
+   public void checkAppPemission() {
+
+        /*if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this,Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this,Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//            Log.d("checkVerify() : ","if문 들어옴");
+
+            //카메라 또는 저장공간 권한 획득 여부 확인
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.WRITE_EXTERNAL_STORAGE) || ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.CAMERA)) {
+
+                Toast.makeText(getApplicationContext(),"권한 관련 요청을 허용해 주셔야 카메라 캡처이미지 사용등의 서비스를 이용가능합니다.",Toast.LENGTH_SHORT).show();
+
+            } else {
+//                Log.d("checkVerify() : ","카메라 및 저장공간 권한 요청");
+                // 카메라 및 저장공간 권한 요청
+                ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.INTERNET, Manifest.permission.CAMERA,
+                        Manifest.permission.ACCESS_NETWORK_STATE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+            }
+        }*/
+    }
+
 
     //웹뷰 셋팅
     public void webInit(){
@@ -95,7 +130,6 @@ public class MainActivity extends Activity {
         webView.clearFormData();
         webView.clearCache(true);
 
-        //webView.setWebViewClient(new WebViewClientClass());
         //javascript Bridge 연결
         webView.addJavascriptInterface(new AndroidBridge(), "android");
 
@@ -127,6 +161,39 @@ public class MainActivity extends Activity {
             public boolean onJsConfirm(WebView view, String url, String message, JsResult result) {
                 result.confirm();
                 return true;
+            }
+
+            //웹페이지에서 input(type="file") 클릭시 이벤트 발생
+            @Override
+            public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
+                Log.d("asdd", "***** onShowFileChooser()");
+                //Callback 초기화
+                //return super.onShowFileChooser(webView, filePathCallback, fileChooserParams);
+
+                /* 파일 업로드 */
+                if (mFilePathCallback != null) {
+                    //파일을 한번 오픈했으면 mFilePathCallback 를 초기화를 해줘야함
+                    // -- 그렇지 않으면 다시 파일 오픈 시 열리지 않는 경우 발생
+                    mFilePathCallback.onReceiveValue(null);
+                    mFilePathCallback = null;
+                }
+                mFilePathCallback = filePathCallback;
+
+                //권한 체크
+                if(true) {
+
+                    //권한이 있으면 처리
+                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setType("*/*");  //모든 contentType 파일 표시
+    //            intent.setType("image/*");  //contentType 이 image 인 파일만 표시
+                    startActivityForResult(intent, FILE_CHOOSE_PAGE);
+                    return true;
+                } else {
+                    //권한이 없으면 처리
+                    return false;
+                }
+
             }
 
             @Override
@@ -273,8 +340,24 @@ public class MainActivity extends Activity {
                     break;
 
                 case FILE_CHOOSE_PAGE:
-
+                    //fileChooser 로 파일 선택 후 onActivityResult 에서 결과를 받아 처리함
+                    if(requestCode == FILE_CHOOSE_PAGE) {
+                        //파일 선택 완료 했을 경우
+                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {// LOLLIPOP : 21(안드로이드 5)
+                            mFilePathCallback.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, data));
+                        }else{
+                            mFilePathCallback.onReceiveValue(new Uri[]{data.getData()});
+                        }
+                        mFilePathCallback = null;
+                    } else {
+                        //cancel 했을 경우
+                        if(mFilePathCallback != null) {
+                            mFilePathCallback.onReceiveValue(null);
+                            mFilePathCallback = null;
+                        }
+                    }
                     break;
+
 
                 default:
                     break;

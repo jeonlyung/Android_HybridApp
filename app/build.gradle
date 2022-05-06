@@ -29,15 +29,13 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
-    implementation "androidx.startup:startup-runtime:1.0.0"
-
+    implementation 'androidx.startup:startup-runtime:1.1.1'
+    implementation 'androidx.core:core:1.7.0'
 
     //QR스캐너 라이브러리 추가
     implementation 'com.journeyapps:zxing-android-embedded:3.6.0'
     implementation 'android.arch.navigation:navigation-fragment:1.0.0'
     implementation 'android.arch.navigation:navigation-ui:1.0.0'
-    implementation 'com.google.android.play:core:1.10.3'
-    implementation 'com.google.code.gson:gson:2.8.5'
 
     //JUnit4 추가
     testImplementation 'junit:junit:4.12'
