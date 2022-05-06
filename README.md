@@ -1,10 +1,8 @@
 # android 하이브리드 앱
 
-QR-Code Scanner 개발
-QR Code Scanner기능을 사용가능한 Android 앱
+JavaScript를 이용하여 웹 페이지로 구현되어 있는 하이브리드 앱 기반 
 
 1. 프로젝트의 목적 및 용도
-
 - QR-Code Scanner 개발 (2022-04-01)
   - QR코드를 Scan하여 데이터 정보를 인식하여 프로세스 이용
   - 하이브리드 앱 기반으로 개발되어 자바스크립트에서 네이티브 호출 기능(브릿지 이용)
